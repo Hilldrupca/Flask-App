@@ -1,0 +1,67 @@
+{% extends 'base.html' %} 
+
+{% block head %}
+
+<title>Home</title>
+
+{% endblock %}
+
+
+
+{% block body %}
+
+
+<label for='foodsearch'>Food Search:</label>
+<input type='search' id='foodsearch' name='foodsearch' style='width: 45%'>
+<input type='submit' value='Add Food'>
+<p>
+
+<table>
+
+    <colgroup>
+        <col class='delete' />
+        <col class='fooditem' />
+        <col class='foodamount' />
+        <col class='unit' />
+    </colgroup>
+    
+    {% for x in range(0,15) %}
+        
+        <tr class='foodrow'>
+            <td style='text-align:center'><button>X</Button></td>
+            <td style='text-align:left' class='text'></td>
+            <td>
+                <input type='number' value=0 step=1 min=0 max=10000 size=3>
+            </td>
+            <td>
+                <select>
+                    <option value='g'>g</option>
+                </select>
+            </td>
+        </tr>
+    
+    {% endfor %}
+
+</table>
+
+<style>
+table {
+    width: 75%;
+    border-collapse: collapse;
+    table-layout: fixed;
+}
+td{border: 1px solid black}
+.delete{
+    width: 5%;
+}
+.fooditem{
+    width: 62%;
+}
+.foodamount, .unit{
+    width: 10%;
+}
+.foodrow:nth-child(odd) .text{
+    background-color: #eee;
+}
+</style>
+{% endblock %}
