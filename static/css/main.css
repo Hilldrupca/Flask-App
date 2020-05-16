@@ -1,0 +1,18 @@
+table {
+    width: 75%;
+    border-collapse: collapse;
+    table-layout: fixed;
+}
+td{border: 1px solid black}
+.delete{
+    width: 5%;
+}
+.fooditem{
+    width: 62%;
+}
+.foodamount, .unit{
+    width: 10%;
+}
+.foodrow:nth-child(odd) .text{
+    background-color: #eee;
+}
