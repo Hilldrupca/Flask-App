@@ -40,7 +40,7 @@ function showHide(show, hide){
                 <a class='nav-link' href='/account/'>Account</a>
             </li>
             <li class='nav-item'>
-                <a class='nav-link' style='color: #007bff;' onclick='showHide("signin","createaccount")'>Sign In</a>
+                <a class='nav-link' style='color: #007bff; cursor: pointer;' onclick='showHide("signin","createaccount")'>Sign In</a>
             </li>
         </ul>
     </nav>
@@ -61,7 +61,7 @@ function showHide(show, hide){
             <label>Remember account?</label>
             <br>
             <button type='submit' class='btn btn-primary'>Submit</button>
-            <a class='nav-link' style='float: right; margin-top: 15px; color: #007bff; font-size: 12px;' onclick='showHide("createaccount","signin")'>Create Account</a>
+            <a class='nav-link' style='float: right; margin-top: 15px; color: #007bff; font-size: 12px; cursor: pointer;' onclick='showHide("createaccount","signin")'>Create Account</a>
         </form>
     </div>
     <div class='bg-light' id='createaccount' style='position: fixed; top: 80px; right: 30px; width: 300px; padding: 20px; display: none; z-index: 9;'>
@@ -81,7 +81,7 @@ function showHide(show, hide){
                 <input type='password' class='form-control' id='exampleInputPassword1' placeholder='password'>
             </div>
             <button type='submit' class='btn btn-primary'>Submit</button>
-            <a class='nav-link' style='float: right; margin-top: 15px; color: #007bff; font-size: 12px;' onclick='showHide("signin","createaccount")'>Already have an account?</a>
+            <a class='nav-link' style='float: right; margin-top: 15px; color: #007bff; font-size: 12px; cursor: pointer;' onclick='showHide("signin","createaccount")'>Already have an account?</a>
         </form>
     </div>
     {% block body %} {% endblock %}
