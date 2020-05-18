@@ -1,5 +1,6 @@
 {% extends 'base.html' %} 
 
+
 {% block head %}
 
 <title>Recipe Builder</title>
@@ -7,17 +8,15 @@
 {% endblock %}
 
 
-
 {% block body %}
-
 
 <label for='foodsearch'>Food Search:</label>
 <input type='search' id='foodsearch' name='foodsearch' style='width: 45%'>
 <input type='submit' value='Add Food'>
-<p>
+<br>
 
-<table>
-
+<div style='width: 75%; height: 355px; overflow-y: scroll;'>
+    <table id='foodtable'>
     <colgroup>
         <col class='delete' />
         <col class='fooditem' />
@@ -25,17 +24,17 @@
         <col class='unit' />
     </colgroup>
     
-    {% for x in range(0,15) %}
+    {% for x in range(0,10) %}
         
-        <tr class='foodrow'>
-            <td style='text-align:center'><button>X</Button></td>
-            <td style='text-align:left' class='text'></td>
+        <tr class='foodrow' id='foodrow{{x}}'>
+            <td style='text-align:center'><button id='delete{{x}}' onclick='resetRow(this.id)'>X</Button></td>
+            <td style='text-align:left' id='item{{x}}' class='text'></td>
             <td>
-                <input type='number' value=0 step=1 min=0 max=10000 size=3>
+                <input type='number' id='amount{{x}}' value=0 step=1 min=0 max=10000 size=3>
             </td>
             <td>
                 <select>
-                    <option value='g'>g</option>
+                    <option id='unit{{x}}' value='g'>g</option>
                 </select>
             </td>
         </tr>
@@ -43,5 +42,55 @@
     {% endfor %}
 
 </table>
+</div>
 
+<script>
+var ingredients = 0;
+var timer;
+
+function nextIng(){
+    var next = ingredients;
+    ingredients++;
+    return 'item'+next.toString()
+};
+
+function talkToServer(){
+    var a = new XMLHttpRequest;
+    a.open('GET','/test',true);
+    a.send();
+    a.onreadystatechange = function(){
+        if (this.readyState == 4 && this.status == 200){
+            document.getElementById(nextIng()).innerHTML = this.responseText;
+        }
+    }
+};
+
+document.getElementById('foodsearch').addEventListener('keydown',function(){
+    if (timer){clearTimeout(timer)};
+    timer = setTimeout(talkToServer,100);
+});
+
+function resetRow(row){
+    var rowId = parseInt(row.slice(-1));
+    var item = 'item' + rowId;
+    var amount = 'amount' + rowId;
+    var unit = 'unit' + rowId;
+    document.getElementById(item).innerHTML = '';
+    document.getElementById(amount).value = 0;
+    shiftRow(rowId);
+    ingredients--;
+};
+
+function shiftRow(rowId){
+    var tablerows = document.getElementById('foodtable').rows.length;
+    for (i = rowId; i < tablerows-1; i++){
+        var next = i+1;
+        document.getElementById('item'+i).innerHTML = document.getElementById('item'+next).innerHTML;
+        document.getElementById('amount'+i).value = document.getElementById('amount'+next).value;
+    }
+    tablerows--;
+    document.getElementById('item'+tablerows).innerHTML='';
+    document.getElementById('amount'+tablerows).value=0;
+}
+</script>
 {% endblock %}
