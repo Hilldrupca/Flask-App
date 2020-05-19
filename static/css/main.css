@@ -2,16 +2,31 @@ table {
     border-collapse: collapse;
     table-layout: fixed;
 }
-td{border: 1px solid black}
+tr {
+    border-bottom: 1px solid black;
+}
 .delete{
     width: 5%;
 }
 .fooditem{
-    width: 62%;
+    width: 100%;
 }
 .foodamount, .unit{
     width: 10%;
 }
 .foodrow:nth-child(odd) .text{
     background-color: #eee;
+}
+.autocomplete-items{
+    position: absolute;
+    z-index: 9;
+    top: 100%;
+    left: 0;
+    right: 0;
+}
+.autocomplete-items div{
+    cursor: pointer;
+}
+.autocomplete-items div:hover{
+    background: #eee;
 }
