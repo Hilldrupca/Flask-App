@@ -9,15 +9,20 @@ def home_page():
 
 @app.route('/recipebuilder')
 def recipe_builder():
-    return render_template('recipe-builder.html')
+    return render_template('recipe-builder.html', macros= nu.macros,\
+            vitamins= nu.vitamins, minerals= nu.minerals)
 
 @app.route('/account')
 def account():
     return render_template('account.html')
 
-@app.route('/search/<string:search>', methods=['GET'])
+@app.route('/foodsearch/<string:search>')
 def search(search):
     return jsonify(nu.foodsearch(search))
+
+@app.route('/nutritiondata/<string:dbnum>')
+def nutrition_data(dbnum):
+    return jsonify(nu.nutdata(dbnum))
 
 if __name__ == '__main__':
     app.run(debug=True)
