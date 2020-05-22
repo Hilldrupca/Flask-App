@@ -43,6 +43,37 @@ weight = Table('Weight', metadata,
     Column('Grams', DECIMAL),
 )
 
+# List of tracked nutrients. More in database than listed here.
+nutr_list = {'208': ('Calories','kcal'), '204': ('Fats','g'), '605': ('Trans fats','g'),
+        '606': ('Saturated fats','g'), '645': ('Monounsaturated fats','g'), '646': ('Polyunsaturated fats','g'),
+        '601': ('Cholesterol','mg'), '205': ('Carbohydrates','g'), '291': ('Fiber','g'),
+        '203': ('Protein','g'), '320': ('Vitamin A','IU'), '404': ('Thiamin (B1)','mg'),
+        '405': ('Riboflavin (B2)','mg'), '406': ('Niacin (B3)','mg'), '410': ('Pantothenic acid (B5)','mg'),
+        '415': ('Vitamin B6','mg'), '435': ('Folate (B9)','mcg'), '418': ('Vitamin B12','mcg'),
+        '401': ('Vitamin C','mg'), '324': ('Vitamin D','IU'), '323': ('Vitamin E','mg'),
+        '430': ('Vitamin K','mcg'), '421': ('Choline','mg'), '301': ('Calcium','mg'),
+        '312': ('Copper','mg'), '313': ('Fluoride','mcg'), '303': ('Iron','mg'),
+        '315': ('Manganese','mg'), '304': ('Magnesium','mg'), '305': ('Phosphorus','mg'),
+        '306': ('Potassium','mg'), '317': ('Selenium','mcg'), '307': ('Sodium','mg'),
+        '309': ('Zinc','mg')}
+
+macros = {'208': ('Calories','kcal'), '204': ('Fats','g'), '605': ('Trans fats','g'),
+          '606': ('Saturated fats','g'), '645': ('Monounsaturated fats','g'),
+          '646': ('Polyunsaturated fats','g'), '601': ('Cholesterol','mg'),
+          '205': ('Carbohydrates','g'), '291': ('Fiber','g'), '203': ('Protein','g')}
+
+vitamins = {'320': ('Vitamin A','IU'), '404': ('Thiamin (B1)','mg'),
+            '405': ('Riboflavin (B2)','mg'), '406': ('Niacin (B3)','mg'),
+            '410': ('Pantothenic acid (B5)','mg'), '415': ('Vitamin B6','mg'),
+            '435': ('Folate (B9)','mcg'), '418': ('Vitamin B12','mcg'),
+            '401': ('Vitamin C','mg'), '324': ('Vitamin D','IU'), '323': ('Vitamin E','mg'),
+            '430': ('Vitamin K','mcg'), '421': ('Choline','mg')}
+
+minerals = {'301': ('Calcium','mg'), '312': ('Copper','mg'), '313': ('Fluoride','mcg'),
+            '303': ('Iron','mg'), '315': ('Manganese','mg'), '304': ('Magnesium','mg'),
+            '305': ('Phosphorus','mg'), '306': ('Potassium','mg'), '317': ('Selenium','mcg'),
+            '307': ('Sodium','mg'), '309': ('Zinc','mg')}
+
 def foodsearch(search):
     """Return 25 most relevant ingredients from database based on search terms.
         
@@ -82,7 +113,7 @@ def foodsearch(search):
     return [{'code':x[0],'name':x[1]} for x in result[:25]]
     
 def nutdata(DBnum):
-    """Return the nutrition data for an ingredient.
+    """Return the nutrition data for an ingredient in JSON serializable format.
         
     Keyword arguments:
     dbNum -- database number as a string (e.g. '01001' = Butter, salted)
@@ -91,9 +122,15 @@ def nutdata(DBnum):
     s = select([nutrition.c.Nutr_Num, nutrition.c.Nutr_Val])
     s = s.where(nutrition.c.DBnum == DBnum)
     
-    result = connector.execute(s)
-    
-    return result
+    result = connector.execute(s).fetchall()
+    json = {}
+    for x in result:
+        if x[0] in nutr_list:
+            name = nutr_list[x[0]]
+            # key will be nutrient name, i.e. 'Protein'
+            json[name[0]] = str(x[1])
+
+    return json
         
 def defsearch(nut=None):
     """Return nutrient weight unit and definition.
@@ -145,4 +182,4 @@ def fgsearch():
     for row in result:
         print(row)
 
-nutdata('01001')
+
