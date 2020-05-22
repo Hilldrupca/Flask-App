@@ -1,5 +1,7 @@
 var ingredients = 0;
 var foodsearch = [];
+var foodlist = [];
+var test = [{'hi':12}];
 var timer = 0;
 
 function nextIng(){
@@ -12,7 +14,7 @@ function search(){
     var a = new XMLHttpRequest();
     var term = document.getElementById('foodsearch').value;
     if (term){
-        a.open('GET','/search/'+term,true);
+        a.open('GET','/foodsearch/'+term,true);
         a.onload = function(){
             if (a.readyState == 4 && a.status == 200){
                 foodsearch = JSON.parse(this.responseText);
@@ -34,21 +36,24 @@ function delay(input){
         if(timer){clearTimeout(timer)};
         timer = setTimeout(search,1000);
     });
-    document.addEventListener('click', closeAutocomplete());
-    
+    document.addEventListener('click', closeAutocomplete);
 };
 
 function autocomplete(){
     closeAutocomplete();
-    a = document.createElement('DIV');
-    a.setAttribute('class', 'autocomplete-items');
-    document.getElementById('foodsearch').parentNode.appendChild(a);
-        
+    if (foodsearch.length){
+        a = document.createElement('DIV');
+        a.setAttribute('class', 'autocomplete-items');
+        a.setAttribute('style', 'margin: 0px 0px 0px 20%;');
+        document.getElementById('foodsearch').parentNode.appendChild(a);
+    };
     for (i = 0; i < foodsearch.length; i++){
         b = document.createElement('DIV');
         b.innerHTML = foodsearch[i].name;
+        b.id = foodsearch[i].code;
         b.addEventListener('click', function(e){
             input.value = this.innerHTML;
+            input.name = this.id;
             closeAutocomplete();
         });
         a.appendChild(b);
@@ -63,14 +68,17 @@ function closeAutocomplete(){
 };
         
 function resetRow(row){
-    var rowId = parseInt(row.slice(-1));
+    var rowId = parseInt(row.id.slice(-1));
     var item = 'item' + rowId;
-    var amount = 'amount' + rowId;
-    var unit = 'unit' + rowId;
-    document.getElementById(item).innerHTML = '';
-    document.getElementById(amount).value = 0;
-    shiftRow(rowId);
-    ingredients--;
+    if (document.getElementById(item).innerHTML){
+        var amount = 'amount' + rowId;
+        var unit = 'unit' + rowId;
+        document.getElementById(item).innerHTML = '';
+        document.getElementById(amount).value = 0;
+        updateFood(row);
+        shiftRow(rowId);
+        ingredients--;
+    }
 };
 
 function shiftRow(rowId){
@@ -85,3 +93,42 @@ function shiftRow(rowId){
     document.getElementById('amount'+tablerows).value=0;
 };
 
+function addFood(){
+    item = document.getElementById('item' + ingredients);
+    food = document.getElementById('foodsearch');
+    
+    var a = new XMLHttpRequest();
+    a.open('GET', '/nutritiondata/' + food.name, true);
+    a.onload = function(){
+        if (a.readyState == 4 && a.status == 200){
+            item.innerHTML = food.value;
+            foodlist.push(JSON.parse(a.responseText));
+            foodlist[ingredients].amount=0;
+            foodlist[ingredients].code=food.name.toString();
+            foodlist[ingredients].name=food.value.toString();
+            food.value = '';
+            food.name = '';
+            ingredients++;
+        }else{
+            alert("Sorry, the food you are searching for isn't in our database.")
+        };
+    };
+    a.send();
+};
+
+function updateFood(e){
+    var food = foodlist[parseInt(e.id.slice(-1))];
+    var diff = e.value - food.amount;
+    for (var nut in food){
+        if (nut == 'amount'){ break;}
+        var currentNut = document.getElementById(nut);
+        currentNut.className = parseFloat(currentNut.className) + (diff / 100 * parseFloat(food[nut]));
+        currentNut.innerHTML = parseFloat(currentNut.className).toFixed(1);
+        if (isNaN(currentNut.innerHTML) || parseFloat(currentNut.innerHTML) == 0){
+            currentNut.innerHTML = 0;
+            currentNut.className = 0;
+        };
+        
+    };
+    food.amount = e.value;
+};
