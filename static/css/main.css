@@ -2,9 +2,6 @@ table {
     border-collapse: collapse;
     table-layout: fixed;
 }
-tr {
-    border-bottom: 1px solid black;
-}
 .delete{
     width: 5%;
 }
@@ -14,8 +11,8 @@ tr {
 .foodamount, .unit{
     width: 10%;
 }
-.foodrow:nth-child(odd) .text{
-    background-color: #eee;
+.foodrow:nth-child(odd) td{
+    background-color: #f8f9fa;
 }
 .autocomplete-items{
     position: absolute;
@@ -23,10 +20,18 @@ tr {
     top: 100%;
     left: 0;
     right: 0;
+    overflow: scroll;
+    height: 200px;
 }
 .autocomplete-items div{
     cursor: pointer;
+    background-color: white;
 }
 .autocomplete-items div:hover{
-    background: #eee;
+    background-color: #f8f9fa;
 }
+/*body {
+    background-image: url('ntFmJUZ8tw3ULD3tkBaAtf-970-80.jpg');
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+}*/
