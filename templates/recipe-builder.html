@@ -4,45 +4,147 @@
 {% block head %}
     <title>Recipe Builder</title>
     <script type='text/javascript' src='{{ url_for("static", filename="js/recipe-builder.js") }}'></script>
+    <script type='text/javascript' src='{{ url_for("static", filename="js/nutrient-profiles.js") }}'></script>
 {% endblock %}
 
 
 {% block body %}
-<form autocomplete='off'>
-    <label>Food Search:</label>
-    <div style='position: relative; display: inline-block; width:45%;'>
-        <input id='foodsearch' name='foodsearch' style='width: 100%;'>
-    </div>
-    <input type='submit' form='foodsearch' value='Add Food'>
-</form>
-<br>
-<div style='width: 60%; height: 355px; overflow-y: scroll;'>
-    <table id='foodtable'>
-    <colgroup>
-        <col class='delete' />
-        <col class='fooditem' />
-        <col class='foodamount' />
-        <col class='unit' />
-    </colgroup>
+<div style='position: relative; display: inline-block; width:45%;'>
+    <input id='foodsearch' autocomplete='off' style='width: 80%; margin: 0px 0px 0px 20%;' placeholder='Search foods...'>
+</div>
+<button onclick='addFood()'>Add</button>
+<br><br>
+<div style='display: table; width: 100%;'>
+    <div style='display: table-row;'>
+        <div style='width: 50%; display: table-cell; padding-left: 20px;'>
+            <div style='overflow-y: scroll;'>
+                <table id='foodtable'>
+                <colgroup>
+                    <col class='delete'>
+                    <col class='fooditem'>
+                    <col class='foodamount'>
+                    <col class='unit'>
+                </colgroup>
     
-    {% for x in range(0,10) %}
+                {% for x in range(0,10) %}
         
-        <tr class='foodrow' id='foodrow{{x}}'>
-            <td style='text-align:center'><button id='delete{{x}}' style='border-radius: 50%;' onclick='resetRow(this.id)'>X</Button></td>
-            <td style='text-align:left' id='item{{x}}' class='text'></td>
-            <td>
-                <input type='number' id='amount{{x}}' value=0 step=1 min=0 max=10000 size=3>
-            </td>
-            <td>
-                <select>
-                    <option id='unit{{x}}' value='g'>g</option>
-                </select>
-            </td>
-        </tr>
+                    <tr class='foodrow' id='foodrow{{x}}'>
+                        <td style='text-align:center'><button id='delete{{x}}' style='border-radius: 50%;' onclick='resetRow(this)'>X</Button></td>
+                        <td style='text-align:left' id='item{{x}}' class='text'></td>
+                        <td>
+                            <input type='number' id='amount{{x}}' autocomplete='off' value=0 step=1 min=0 max=10000 size=3 onchange='updateFood(this)'>
+                        </td>
+                        <td>
+                            <select>
+                                <option id='unit{{x}}' value='g'>g</option>
+                            </select>
+                        </td>
+                    </tr>
     
-    {% endfor %}
+                {% endfor %}
 
-    </table>
+                </table>
+            </div>
+        </div>
+        <div style='display: table-cell; width: 50%;'>
+            <div style='text-align: center; font-weight: bold; width: 75%; margin: auto; background-color: #f8f9fa; border-top-right-radius: 10px; border-top-left-radius: 10px;'>
+            Macronutrients
+            </div>
+            <br>
+            <table id='macros' style='width: 100%;'>
+                <colgroup>
+                    <col style='width: 40%;'>
+                    <col style='width: 20%;'>
+                    <col style='width: 20%;'>
+                    <col style='width: 20%;'>
+                </colgroup>
+                <tr>
+                    <td></td>
+                    <td style='text-align: right;'>Current</td>
+                    <td style='text-align: right;'>Goal</td>
+                    <td style='text-align: center;'>%</t>
+                </tr>
+            
+                {% for x,y in macros.items() %}
+            
+                    <tr>
+                        <td style='text-align: right; padding-left: 10px;'>{{y[0] + ', ' + y[1]}}</td>
+                        <td id='{{y[0]}}' class='0' style='text-align: right;'>0</td>
+                        <td style='text-align: center;'></td>
+                        <td></td>
+                    </tr>
+            
+                {% endfor %}
+            
+            </table>
+        </div>
+    </div>
+    <div style='display: table-row;'>
+        <div style='width: 50%; display: table-cell;'>
+            <div style='text-align: center; font-weight: bold; width: 75%; margin: auto; background-color: #f8f9fa; border-top-right-radius: 10px; border-top-left-radius: 10px;'>
+            Vitamins
+            </div>
+            <br>
+            <table id='vitamins' style='width: 100%;'>
+                <colgroup>
+                    <col style='width: 45%;'>
+                    <col style='width: 20%;'>
+                    <col style='width: 20%;'>
+                    <col style='width: 15%;'>
+                </colgroup>
+                <tr>
+                    <td></td>
+                    <td style='text-align: right;'>Current</td>
+                    <td style='text-align: right;'>Goal</td>
+                    <td style='text-align: center;'>%</t>
+                </tr>
+            
+                {% for x,y in vitamins.items() %}
+
+                    <tr>
+                        <td style='text-align: right; padding-left: 10px;'>{{y[0] + ', ' + y[1]}}</td>
+                        <td id='{{y[0]}}' class='0' style='text-align: right;'>0</td>
+                        <td style='text-align: center;'></td>
+                        <td></td>
+                    </tr>
+                
+                {% endfor %}
+            
+            </table>
+        </div>
+        <div style='width: 50%; display: table-cell; padding-top: 50px;'>
+            <div style='text-align: center; font-weight: bold; width: 75%; margin: auto; background-color: #f8f9fa; border-top-right-radius: 10px; border-top-left-radius: 10px;'>
+            Minerals
+            </div>
+            <br>
+            <table id='minerals' style='width: 100%;'>
+                <colgroup>
+                    <col style='width: 40%;'>
+                    <col style='width: 20%;'>
+                    <col style='width: 20%;'>
+                    <col style='width: 20%;'>
+                </colgroup>
+                <tr>
+                    <td></td>
+                    <td style='text-align: right;'>Current</td>
+                    <td style='text-align: right;'>Goal</td>
+                    <td style='text-align: center;'>%</t>
+                </tr>
+            
+                {% for x,y in minerals.items() %}
+            
+                    <tr>
+                        <td style='text-align: right; padding-left: 20px;'>{{y[0] + ', ' + y[1]}}</td>
+                        <td id='{{y[0]}}' class='0' style='text-align: right;'>0</td>
+                        <td style='text-align: center;'></td>
+                        <td></td>
+                    </tr>
+                
+                {% endfor %}
+            
+            </table>
+        </div>
+    </div>
 </div>
 <script>
 var input = document.getElementById('foodsearch');
