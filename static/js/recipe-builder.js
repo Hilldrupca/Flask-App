@@ -1,7 +1,6 @@
 var ingredients = 0;
 var foodsearch = [];
 var foodlist = [];
-var test = [{'hi':12}];
 var timer = 0;
 
 function nextIng(){
@@ -24,7 +23,50 @@ function search(){
         a.send();
     }else{
         closeAutocomplete();
-    }
+    };
+};
+
+function loadProfile(e){
+    var age = e.selectedOptions[0].parentElement.label;
+    var gender = e.value;
+    console.log(age, gender);
+    if(age){
+        var selectedProfile = profiles[age][gender];
+        document.getElementById('profileage').innerText = age + ':';
+    }else{
+        var selectedProfile = profiles['1-3 yr']['Children'];
+        document.getElementById('profileage').innerText = '';
+    };
+    
+    for (var nut in selectedProfile){
+        var goalId = nut + 'Goal';
+        var goal = document.getElementById(goalId);
+        if(goal != null){
+            currentNut = selectedProfile[nut];
+            if(typeof(currentNut) == 'string'){ 
+                if(currentNut.endsWith('*')){
+                    currentNut = currentNut.slice(0, currentNut.length-1);
+                    goal.style['font-weight'] = 'bold';
+                };
+            };
+            if(age){
+                goal.innerHTML = currentNut;
+            }else{
+                goal.innerHTML = '';
+            };
+            
+        };
+        if(nut.endsWith('UL')){
+            var perId = nut.slice(0, nut.length-3) + 'Perc';
+            var perc = document.getElementById(perId);
+            if(age){
+                perc.classname = selectedProfile[nut];
+            }else{
+                perc.classname = '';
+            };
+        };
+    };
+    
 };
 
 function delay(input){
@@ -44,7 +86,7 @@ function autocomplete(){
     if (foodsearch.length){
         a = document.createElement('DIV');
         a.setAttribute('class', 'autocomplete-items');
-        a.setAttribute('style', 'margin: 0px 0px 0px 20%;');
+        a.setAttribute('style', 'margin: 0px 0px 0px 4%;');
         document.getElementById('foodsearch').parentNode.appendChild(a);
     };
     for (i = 0; i < foodsearch.length; i++){
@@ -124,10 +166,21 @@ function updateFood(e){
         var currentNut = document.getElementById(nut);
         currentNut.className = parseFloat(currentNut.className) + (diff / 100 * parseFloat(food[nut]));
         currentNut.innerHTML = parseFloat(currentNut.className).toFixed(1);
-        if (isNaN(currentNut.innerHTML) || parseFloat(currentNut.innerHTML) == 0){
+        if (isNaN(currentNut.innerHTML) || parseFloat(currentNut.innerHTML) <= 0){
             currentNut.innerHTML = 0;
             currentNut.className = 0;
         };
+        
+        var currentPerc = document.getElementById(nut + 'Perc');
+        var nutGoal = parseFloat(document.getElementById(nut + 'Goal').innerText);
+        if(nutGoal){
+            if(nut == 'Sodium'){
+                console.log(currentNut.className)
+                console.log(nutGoal)
+            }
+            perc = parseFloat(currentNut.className) / nutGoal * 100
+            currentPerc.innerHTML = parseFloat(perc).toFixed(1);
+        }
         
     };
     food.amount = e.value;
