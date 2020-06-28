@@ -45,32 +45,34 @@ weight = Table('Weight', metadata,
 
 # List of tracked nutrients. More in database than listed here.
 nutr_list = {'208': ('Calories','kcal'), '204': ('Fats','g'), '605': ('Trans fats','g'),
-        '606': ('Saturated fats','g'), '645': ('Monounsaturated fats','g'), '646': ('Polyunsaturated fats','g'),
+        '606': ('Saturated fats','g'), '645': ('Monounsaturated fats','g'),
+        '646': ('Polyunsaturated fats','g'), '851': ('Omega-3','g'), '618': ('Omega-6','g'),
         '601': ('Cholesterol','mg'), '205': ('Carbohydrates','g'), '291': ('Fiber','g'),
-        '203': ('Protein','g'), '320': ('Vitamin A','IU'), '404': ('Thiamin (B1)','mg'),
+        '203': ('Protein','g'), '320': ('Vitamin A','mcg'), '404': ('Thiamin (B1)','mg'),
         '405': ('Riboflavin (B2)','mg'), '406': ('Niacin (B3)','mg'), '410': ('Pantothenic acid (B5)','mg'),
         '415': ('Vitamin B6','mg'), '435': ('Folate (B9)','mcg'), '418': ('Vitamin B12','mcg'),
-        '401': ('Vitamin C','mg'), '324': ('Vitamin D','IU'), '323': ('Vitamin E','mg'),
+        '401': ('Vitamin C','mg'), '328': ('Vitamin D','mcg'), '323': ('Vitamin E','mg'),
         '430': ('Vitamin K','mcg'), '421': ('Choline','mg'), '301': ('Calcium','mg'),
         '312': ('Copper','mg'), '313': ('Fluoride','mcg'), '303': ('Iron','mg'),
-        '315': ('Manganese','mg'), '304': ('Magnesium','mg'), '305': ('Phosphorus','mg'),
+        '304': ('Magnesium','mg'), '315': ('Manganese','mg'), '305': ('Phosphorus','mg'),
         '306': ('Potassium','mg'), '317': ('Selenium','mcg'), '307': ('Sodium','mg'),
         '309': ('Zinc','mg')}
 
 macros = {'208': ('Calories','kcal'), '204': ('Fats','g'), '605': ('Trans fats','g'),
           '606': ('Saturated fats','g'), '645': ('Monounsaturated fats','g'),
-          '646': ('Polyunsaturated fats','g'), '601': ('Cholesterol','mg'),
-          '205': ('Carbohydrates','g'), '291': ('Fiber','g'), '203': ('Protein','g')}
+          '646': ('Polyunsaturated fats','g'), '851': ('Omega-3','g'), '618': ('Omega-6','g'),
+          '601': ('Cholesterol','mg'),'205': ('Carbohydrates','g'), '291': ('Fiber','g'),
+          '203': ('Protein','g')}
 
-vitamins = {'320': ('Vitamin A','IU'), '404': ('Thiamin (B1)','mg'),
+vitamins = {'320': ('Vitamin A','mcg'), '404': ('Thiamin (B1)','mg'),
             '405': ('Riboflavin (B2)','mg'), '406': ('Niacin (B3)','mg'),
             '410': ('Pantothenic acid (B5)','mg'), '415': ('Vitamin B6','mg'),
             '435': ('Folate (B9)','mcg'), '418': ('Vitamin B12','mcg'),
-            '401': ('Vitamin C','mg'), '324': ('Vitamin D','IU'), '323': ('Vitamin E','mg'),
+            '401': ('Vitamin C','mg'), '328': ('Vitamin D','mcg'), '323': ('Vitamin E','mg'),
             '430': ('Vitamin K','mcg'), '421': ('Choline','mg')}
 
 minerals = {'301': ('Calcium','mg'), '312': ('Copper','mg'), '313': ('Fluoride','mcg'),
-            '303': ('Iron','mg'), '315': ('Manganese','mg'), '304': ('Magnesium','mg'),
+            '303': ('Iron','mg'), '304': ('Magnesium','mg'),'315': ('Manganese','mg'),
             '305': ('Phosphorus','mg'), '306': ('Potassium','mg'), '317': ('Selenium','mcg'),
             '307': ('Sodium','mg'), '309': ('Zinc','mg')}
 
