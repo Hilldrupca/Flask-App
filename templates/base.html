@@ -14,19 +14,35 @@
 <script>
 
 function showHide(show, hide){
-    if (hide){
-        document.getElementById(hide).style.display = 'none';
-    }
-    if (show){
-        document.getElementById(show).style.display = 'block';
-    }
-}
+    var a = document.getElementById('signin');
+    var b = document.getElementById('createaccount');
+    if (a.style.display == 'none' && b.style.display == 'none'){
+        if (hide) {
+            document.getElementById(hide).style.display = 'none';
+        };
+        if (show){
+            document.getElementById(show).style.display = 'block';
+        };
+    } else {
+        a.style.display = 'none';
+        b.style.display = 'none';
+    };
+};
 
+window.addEventListener('click', function(e){
+    var a = document.getElementById('signin');
+    var b = document.getElementById('createaccount');
+    var c = document.getElementById('navsign');
+    if (!a.contains(e.target) && !b.contains(e.target) && !c.contains(e.target)){
+        a.style.display = 'none';
+        b.style.display = 'none';
+    };
+});
 </script>
 
 
 <body>
-    <nav class='navbar navbar-light bg-light'>
+    <nav class='navbar navbar-dark bg-dark'>
         <a class='navbar-brand' href='/'>Planner</a>
         
         <ul class='nav justify-content-end'>
@@ -40,7 +56,7 @@ function showHide(show, hide){
                 <a class='nav-link' href='/account'>Account</a>
             </li>
             <li class='nav-item'>
-                <a class='nav-link' style='color: #007bff; cursor: pointer;' onclick='showHide("signin","createaccount")'>Sign In</a>
+                <a class='nav-link' id='navsign' style='color: #007bff; cursor: pointer;' onclick='showHide("signin","")'>Sign In</a>
             </li>
         </ul>
     </nav>
