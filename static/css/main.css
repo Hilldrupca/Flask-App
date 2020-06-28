@@ -1,7 +1,3 @@
-table {
-    border-collapse: collapse;
-    table-layout: fixed;
-}
 .delete{
     width: 5%;
 }
@@ -21,7 +17,7 @@ table {
     left: 0;
     right: 0;
     overflow: scroll;
-    height: 200px;
+    max-height: 200px;
 }
 .autocomplete-items div{
     cursor: pointer;
