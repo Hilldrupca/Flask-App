@@ -4,21 +4,47 @@
 {% block head %}
     <title>Recipe Builder</title>
     <script type='text/javascript' src='{{ url_for("static", filename="js/recipe-builder.js") }}'></script>
-    <script type='text/javascript' src='{{ url_for("static", filename="js/nutrient-profiles.js") }}'></script>
 {% endblock %}
 
 
 {% block body %}
-<div style='position: relative; display: inline-block; width:45%;'>
-    <input id='foodsearch' autocomplete='off' style='width: 80%; margin: 0px 0px 0px 20%;' placeholder='Search foods...'>
-</div>
-<button onclick='addFood()'>Add</button>
+<div style='padding: 50px;'></div>
+<div class='container'>
+    <div class='row'>
+        <div class='col-6'>
+            <input id='foodsearch' style='width: 100%;' autocomplete='off' placeholder='Search foods...'>
+        </div>
+        <div class='col-0'>
+            <button onclick='addFood()'>Add</button>
+        </div>
+        <div class='col-5'>
+            <label id='profileage'></label>
+            <select id='nutrientProfile' autocomplete='off' onchange='loadProfile(this)'>
+                <option selected>Nutrient Profiles</option>
+                {% for age_range in p.keys() %}
+        
+                    <optgroup label='{{ age_range }}'>
+    
+                    {% for gender in p[age_range].keys() %}
+        
+                        <option>{{ gender }}</option>
+            
+                    {% endfor %}
+        
+                    </optgroup>
+            
+                {% endfor %}
+        
+            </select>
+        </div>
+    </div>
+</div>    
 <br><br>
-<div style='display: table; width: 100%;'>
-    <div style='display: table-row;'>
-        <div style='width: 50%; display: table-cell; padding-left: 20px;'>
+<div class='container'>
+    <div class='row'>
+        <div class='col-sm'>
             <div style='overflow-y: scroll;'>
-                <table id='foodtable'>
+                <table class='table table-striped table-sm' id='foodtable'>
                 <colgroup>
                     <col class='delete'>
                     <col class='fooditem'>
@@ -46,7 +72,7 @@
                 </table>
             </div>
         </div>
-        <div style='display: table-cell; width: 50%;'>
+        <div class='col-sm'>
             <div style='text-align: center; font-weight: bold; width: 75%; margin: auto; background-color: #f8f9fa; border-top-right-radius: 10px; border-top-left-radius: 10px;'>
             Macronutrients
             </div>
@@ -70,8 +96,8 @@
                     <tr>
                         <td style='text-align: right; padding-left: 10px;'>{{y[0] + ', ' + y[1]}}</td>
                         <td id='{{y[0]}}' class='0' style='text-align: right;'>0</td>
-                        <td style='text-align: center;'></td>
-                        <td></td>
+                        <td id='{{y[0]}}Goal' style='text-align: right;'></td>
+                        <td id='{{y[0]}}Perc' style='text-align: center;'></td>
                     </tr>
             
                 {% endfor %}
@@ -79,8 +105,8 @@
             </table>
         </div>
     </div>
-    <div style='display: table-row;'>
-        <div style='width: 50%; display: table-cell;'>
+    <div class='row'>
+        <div class='col-sm'>
             <div style='text-align: center; font-weight: bold; width: 75%; margin: auto; background-color: #f8f9fa; border-top-right-radius: 10px; border-top-left-radius: 10px;'>
             Vitamins
             </div>
@@ -104,15 +130,15 @@
                     <tr>
                         <td style='text-align: right; padding-left: 10px;'>{{y[0] + ', ' + y[1]}}</td>
                         <td id='{{y[0]}}' class='0' style='text-align: right;'>0</td>
-                        <td style='text-align: center;'></td>
-                        <td></td>
+                        <td id='{{y[0]}}Goal' style='text-align: right;'></td>
+                        <td id='{{y[0]}}Perc' style='text-align: center;'></td>
                     </tr>
                 
                 {% endfor %}
             
             </table>
         </div>
-        <div style='width: 50%; display: table-cell; padding-top: 50px;'>
+        <div class='col-sm'>
             <div style='text-align: center; font-weight: bold; width: 75%; margin: auto; background-color: #f8f9fa; border-top-right-radius: 10px; border-top-left-radius: 10px;'>
             Minerals
             </div>
@@ -136,8 +162,8 @@
                     <tr>
                         <td style='text-align: right; padding-left: 20px;'>{{y[0] + ', ' + y[1]}}</td>
                         <td id='{{y[0]}}' class='0' style='text-align: right;'>0</td>
-                        <td style='text-align: center;'></td>
-                        <td></td>
+                        <td id='{{y[0]}}Goal' style='text-align: right;'></td>
+                        <td id='{{y[0]}}Perc' style='text-align: center;'></td>
                     </tr>
                 
                 {% endfor %}
@@ -149,5 +175,6 @@
 <script>
 var input = document.getElementById('foodsearch');
 delay(input);
+var profiles = {{ p|safe }};
 </script>
 {% endblock %}
