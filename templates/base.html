@@ -13,29 +13,46 @@
 
 <script>
 function showHide(e, show, hide){
-    var a = document.getElementById('signin');
-    var b = document.getElementById('createaccount');
-    if (e.id == 'navsign' && (a.style.display == 'block' || b.style.display == 'block')){
-        a.style.display = 'none';
-        b.style.display = 'none';
-    } else {
-        if (hide) {
-            document.getElementById(hide).style.display = 'none';
+    {% if not current_user.username %}
+        var a = document.getElementById('signin');
+        var b = document.getElementById('createaccount');
+        if (e.id == 'navsign' && (a.style.display == 'block' || b.style.display == 'block')){
+            a.style.display = 'none';
+            b.style.display = 'none';
+        } else {
+            if (hide) {
+                document.getElementById(hide).style.display = 'none';
+            };
+            if (show){
+                document.getElementById(show).style.display = 'block';
+            };
         };
-        if (show){
-            document.getElementById(show).style.display = 'block';
+    {% else %}
+        var logout = document.getElementById('logout')
+        if (logout.style.display == 'none') {
+            logout.style.display = 'block';
+        } else {
+            logout.style.display = 'none';
         };
-    };
+    {% endif %}
 };
 
 window.addEventListener('click', function(e){
-    var a = document.getElementById('signin');
-    var b = document.getElementById('createaccount');
-    var c = document.getElementById('navsign');
-    if (!a.contains(e.target) && !b.contains(e.target) && !c.contains(e.target)){
-        a.style.display = 'none';
-        b.style.display = 'none';
-    };
+    {% if current_user.username %}
+        var nav = document.getElementById('navsign')
+        var logout = document.getElementById('logout')
+        if (!nav.contains(e.target) && !logout.contains(e.target)){
+            logout.style.display = 'none';
+        };
+    {% else %}
+        var a = document.getElementById('signin');
+        var b = document.getElementById('createaccount');
+        var c = document.getElementById('navsign');
+        if (!a.contains(e.target) && !b.contains(e.target) && !c.contains(e.target)){
+            a.style.display = 'none';
+            b.style.display = 'none';
+        };
+    {% endif %}
 });
 </script>
 
@@ -55,50 +72,62 @@ window.addEventListener('click', function(e){
                 <a class='nav-link' href='/account'>Account</a>
             </li>
             <li class='nav-item'>
-                <a class='nav-link' id='navsign' style='color: #007bff; cursor: pointer;' onclick='showHide(this, "signin","")'>{{current_user.username}} test</a>
+            {% if current_user.username %}
+                <a class='nav-link' id='navsign' style='color: #007bff; cursor: pointer;' onclick='showHide(this, "logout","")'>{{current_user.username}}</a>
+            {% else %}
+                <a class='nav-link' id='navsign' style='color: #007bff; cursor: pointer;' onclick='showHide(this, "signin","")'>Sign-in</a>
+            {% endif %}
             </li>
         </ul>
     </nav>
-    <div class='bg-light' id='signin' style='position: fixed; top: 80px; right: 30px; width: 300px; padding: 20px; display: none; z-index: 9;'>
-        <form action='/login' method='POST'>
-            <label style='font-size: 28px;'>Sign In</label>
-            <button type='button' style='border-radius: 50px; float: right;' onclick='showHide(this, "","signin")'>X</button>
-            <div class='form-group'>
-                <label>Username:</label>
-                <input type='text' class='form-control' placeholder='Username' name='username' autocomplete='off' required>
-                <a href='/account-recovery' style='font-size: 12px;'>Forgot username or password?</a>
+    {% if not current_user.username %}
+        <div class='bg-light' id='signin' style='position: fixed; top: 80px; right: 30px; width: 300px; padding: 20px; display: none; z-index: 9;'>
+            <form action='/login' method='POST'>
+                <label style='font-size: 28px;'>Sign In</label>
+                <button type='button' style='border-radius: 50px; float: right;' onclick='showHide(this, "","signin")'>X</button>
+                <div class='form-group'>
+                    <label>Username:</label>
+                    <input type='text' class='form-control' placeholder='Username' name='username' autocomplete='off' required>
+                    <a href='/account-recovery' style='font-size: 12px;'>Forgot username or password?</a>
+                </div>
+                <div class='form-group'>
+                    <label>Password:</label>
+                    <input type='password' class='form-control' placeholder='Password' name='password' required>
+                </div>
+                <input type='checkbox' id='rememberaccount'>
+                <label>Remember account?</label>
+                <br>
+                <input type='submit' class='btn btn-primary' value='Login'>
+                <a class='nav-link' style='float: right; margin-top: 15px; color: #007bff; font-size: 12px; cursor: pointer;' onclick='showHide(this, "createaccount","signin")'>Create Account</a>
+            </form>
+        </div>
+        <div class='bg-light' id='createaccount' style='position: fixed; top: 80px; right: 30px; width: 300px; padding: 20px; display: none; z-index: 9;'>
+            <form action='/createaccount' method='POST'>
+                <label style='font-size: 28px;'>Create Account</label>
+                <button type='button' style='border-radius: 50px; float: right;' onclick='showHide(this, "","createaccount")'>X</button>
+                <div class='form-group'>
+                    <label>Email address:</label>
+                    <input type='email' class='form-control' placeholder='Email@example.com' name='email' autocomplete='off' required>
+                </div>
+                <div class='form-group'>
+                    <label>Username:</label>
+                    <input type='text' class='form-control' placeholder='Username' name='username' autocomplete='off' required>
+                </div>  
+                <div class='form-group'>
+                    <label>Password:</label>
+                    <input type='password' class='form-control' placeholder='Password' name='password' required>
+                </div>
+                <input type='submit' class='btn btn-primary' value='Submit'>
+                <a class='nav-link' style='float: right; margin-top: 15px; color: #007bff; font-size: 12px; cursor: pointer;' onclick='showHide(this, "signin","createaccount")'>Already have an account?</a>
+            </form>
+        </div>
+    {% else %}
+        <div class='bg-light' id='logout' style='position: fixed; top: 80px; right: 30px; width: 300px; padding: 20px; display: none; z-index: 9;'>
+            <div class='table-row'>
+                <a href='/logout' class='nav-link'>Log Out</a>
             </div>
-            <div class='form-group'>
-                <label>Password:</label>
-                <input type='password' class='form-control' placeholder='Password' name='password' required>
-            </div>
-            <input type='checkbox' id='rememberaccount'>
-            <label>Remember account?</label>
-            <br>
-            <input type='submit' class='btn btn-primary' value='Login'>
-            <a class='nav-link' style='float: right; margin-top: 15px; color: #007bff; font-size: 12px; cursor: pointer;' onclick='showHide(this, "createaccount","signin")'>Create Account</a>
-        </form>
-    </div>
-    <div class='bg-light' id='createaccount' style='position: fixed; top: 80px; right: 30px; width: 300px; padding: 20px; display: none; z-index: 9;'>
-        <form action='/createaccount' method='POST'>
-            <label style='font-size: 28px;'>Create Account</label>
-            <button type='button' style='border-radius: 50px; float: right;' onclick='showHide(this, "","createaccount")'>X</button>
-            <div class='form-group'>
-                <label>Email address:</label>
-                <input type='email' class='form-control' placeholder='Email@example.com' name='email' autocomplete='off' required>
-            </div>
-            <div class='form-group'>
-                <label>Username:</label>
-                <input type='text' class='form-control' placeholder='Username' name='username' autocomplete='off' required>
-            </div>  
-            <div class='form-group'>
-                <label>Password:</label>
-                <input type='password' class='form-control' placeholder='Password' name='password' required>
-            </div>
-            <input type='submit' class='btn btn-primary' value='Submit'>
-            <a class='nav-link' style='float: right; margin-top: 15px; color: #007bff; font-size: 12px; cursor: pointer;' onclick='showHide(this, "signin","createaccount")'>Already have an account?</a>
-        </form>
-    </div>
+        </div>
+    {% endif %}
     {% block body %} {% endblock %}
 </body>
 </html>
