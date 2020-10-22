@@ -1,18 +1,23 @@
-from sqlalchemy import create_engine, Table, Column, DECIMAL, String, MetaData, and_
+from sqlalchemy import create_engine, Table, Column, DECIMAL, \
+                       String, MetaData, and_
 from sqlalchemy.sql import select
 import re
 from difflib import SequenceMatcher as SeqMatch
 
-engine = create_engine('mysql://chris:mysql@localhost/USDA_Nutrition')
+# Establish connection with database
+url = 'mysql://nutrinfo:nutritioninformation@localhost/USDA_Nutrition'
+engine = create_engine(url)
 connector = engine.connect()
 metadata = MetaData()
 
+# Define form of Nutrient_Definition table
 definition = Table('Nutrient_Definition', metadata,
     Column('Nutr_Num', String, primary_key=True),
     Column('Units', String),
     Column('Nutr_Desc', String),
 )
 
+# Define form of Food_Description table
 food = Table('Food_Description', metadata,
     Column('DBnum', String, primary_key=True),
     Column('FDgroup', String),
@@ -23,6 +28,7 @@ food = Table('Food_Description', metadata,
     Column('Refuse', DECIMAL),
 )
 
+# Define form of Food_Group table
 foodgroup = Table('Food_Group', metadata,
     Column('Group_Id', String, primary_key=True),
     Column('Description', String),
@@ -77,11 +83,12 @@ minerals = {'301': ('Calcium','mg'), '312': ('Copper','mg'), '313': ('Fluoride',
             '307': ('Sodium','mg'), '309': ('Zinc','mg')}
 
 def foodsearch(search):
-    """Return 25 most relevant ingredients from database based on search terms.
+    '''
+    Return 25 most relevant ingredients from database based on search terms.
         
-    Keyword arguments:
-    search -- string to search for (e.g. 'salted butter')
-    """
+    Params:
+        search - String to search for (e.g. 'salted butter')
+    '''
       
     #split string on certain non text characters
     seaList = re.split('[ ,.;:]', search.lower())
@@ -95,9 +102,9 @@ def foodsearch(search):
     
     s = s.where(
             and_(
-                *[food.c.Ldes.like('%{}%'.format(word)) for word in seaList]
-            )
-        )
+                *[food.c.Ldes.like(f'%{word}%') for word in seaList]
+                )
+               )
 
     result = connector.execute(s).fetchall()
     
@@ -115,11 +122,12 @@ def foodsearch(search):
     return [{'code':x[0],'name':x[1]} for x in result[:25]]
     
 def nutdata(DBnum):
-    """Return the nutrition data for an ingredient in JSON serializable format.
+    '''
+    Returns the nutrition data for an ingredient in JSON serializable format.
         
-    Keyword arguments:
-    dbNum -- database number as a string (e.g. '01001' = Butter, salted)
-    """
+    Params:
+        dbNum - Database number as a string (e.g. '01001' = Butter, salted)
+    '''
             
     s = select([nutrition.c.Nutr_Num, nutrition.c.Nutr_Val])
     s = s.where(nutrition.c.DBnum == DBnum)
@@ -135,11 +143,14 @@ def nutdata(DBnum):
     return json
         
 def defsearch(nut=None):
-    """Return nutrient weight unit and definition.
+    """
+    ### To-Do
+    
+    Return nutrient weight unit and definition.
        
-    Keyword arguments:
-    nut -- nutrient number as a string (e.g. '203' = protein),
-        to show all nutrients exclude this.
+    Params:
+        nut - Nutrient number as a string (e.g. '203' = protein),
+              to show all nutrients exclude this.
     """
     if not isinstance(nut, str):
         nut = str(nut)
@@ -151,16 +162,16 @@ def defsearch(nut=None):
         s = s.where(definition.c.Nutr_Num == nut)
         
     result = connector.execute(s).fetchall()
-    
-    for row in result:
-        print(row)
         
 def wgsearch(DBnum):
-    """Return known volumes and weights for an ingredient.
+    '''
+    ### To-Do
     
-    Keyword arguments:
-    dbNum -- database number as a string (e.g. '01001' = Butter, salted)
-    """    
+    Return known volumes and weights for an ingredient.
+    
+    Params:
+        dbNum - Database number as a string (e.g. '01001' = Butter, salted)
+    '''    
     s = select(
             [weight.c.Amount, weight.c.Unit, weight.c.Grams],
         ).where(
@@ -168,20 +179,19 @@ def wgsearch(DBnum):
         )
     
     result = connector.execute(s).fetchall()
-    
-    for row in result:
-        print(row)
         
 def fgsearch():
-    """Return chosen food group number and description that is searchable in database.
+    '''
+    ### To-Do
+    
+    Return chosen food group number and description that is searchable in
+    database.
     
     Returns:
-    returns a tuple ('food group #', 'food group description')
-    """
+        tuple - ('food group #', 'food group description')
+    '''
     s = select([foodgroup])
     result = connector.execute(s)
     
-    for row in result:
-        print(row)
 
 
