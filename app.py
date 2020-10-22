@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, jsonify, session
-from flask_login import LoginManager
+from flask_login import LoginManager, logout_user
 from user import User
 import nutrition as nu
 import pickle
@@ -56,13 +56,13 @@ def login():
             
             refer = directory.get(request.referrer.split('http://127.0.0.1:5000')[1])
                 
-            #return redirect(url_for(refer))
             return render_template('home.html')
-    #return str(usr.id) + str(usr.username) + str(usr.auth)
+        
+@app.route('/logout')
+def logout():
+    logout_user()
+    return render_template('home.html')
 
 @app.route('/createaccount', methods=['GET', 'POST'])
 def create_account():
     return 'hi'
-
-if __name__ == '__main__':
-    app.run(debug=True)
